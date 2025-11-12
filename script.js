@@ -4,7 +4,6 @@ class PageNavigator {
         this.currentPage = 1;
         this.totalPages = 3;
         this.pages = document.querySelectorAll('.page');
-        this.dots = document.querySelectorAll('.dot');
         this.textLinks = document.querySelectorAll('.text-link');
 
         this.init();
@@ -19,14 +18,6 @@ class PageNavigator {
                 if (gotoPage) {
                     this.goToPage(gotoPage);
                 }
-            });
-        });
-        
-        // Set up dot navigation
-        this.dots.forEach(dot => {
-            dot.addEventListener('click', (e) => {
-                const page = parseInt(dot.getAttribute('data-page'));
-                this.goToPage(page);
             });
         });
 
@@ -82,16 +73,7 @@ class PageNavigator {
                 page.classList.remove('active');
             }
         });
-        
-        // Update dot indicators
-        this.dots.forEach((dot, index) => {
-            if (index + 1 === this.currentPage) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
-        
+
         // Add animation class for smooth transitions
         this.pages[this.currentPage - 1].style.animation = 'fadeIn 0.5s ease';
     }
@@ -198,8 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('%c🎨 Orange Design - Interactive Prototype', 'font-size: 16px; font-weight: bold; color: #575039;');
     console.log('%cNavigation:', 'font-weight: bold;');
     console.log('• Click "text test" to navigate between pages');
-    console.log('• Use arrow keys (← →) or navigation buttons');
-    console.log('• Click dots to jump to specific pages');
+    console.log('• Use arrow keys (← →)');
     console.log('• Swipe left/right on touch devices');
     console.log('• Press 1, 2, or 3 to jump to pages');
 });
