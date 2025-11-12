@@ -139,30 +139,6 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.nav-btn {
-    background: #060405;
-    color: white;
-    border: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease, transform 0.2s ease;
-}
-
-.nav-btn:hover {
-    background: #575039;
-    transform: scale(1.1);
-}
-
-.nav-btn:active {
-    transform: scale(0.95);
-}
-
 .page-indicator {
     display: flex;
     gap: 10px;
@@ -207,11 +183,5 @@ body {
     .nav-controls {
         bottom: 20px;
         padding: 10px 20px;
-    }
-    
-    .nav-btn {
-        width: 35px;
-        height: 35px;
-        font-size: 16px;
     }
 }

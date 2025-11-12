@@ -6,8 +6,7 @@ class PageNavigator {
         this.pages = document.querySelectorAll('.page');
         this.dots = document.querySelectorAll('.dot');
         this.textLinks = document.querySelectorAll('.text-link');
-        this.navButtons = document.querySelectorAll('.nav-btn');
-        
+
         this.init();
     }
     
@@ -30,19 +29,7 @@ class PageNavigator {
                 this.goToPage(page);
             });
         });
-        
-        // Set up arrow navigation
-        this.navButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const direction = btn.getAttribute('data-nav');
-                if (direction === 'next') {
-                    this.nextPage();
-                } else if (direction === 'prev') {
-                    this.prevPage();
-                }
-            });
-        });
-        
+
         // Keyboard navigation
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowRight') {
