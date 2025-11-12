@@ -1,274 +1,228 @@
-// State management
-let currentPage = 1;
-const totalPages = 3;
-let isTransitioning = false;
-
-// Touch gesture tracking
-let touchStartX = 0;
-let touchEndX = 0;
-let touchStartY = 0;
-let touchEndY = 0;
-
-// Elements
-const pages = document.querySelectorAll('.page');
-const navBtns = document.querySelectorAll('.nav-btn');
-const swipeHint = document.querySelector('.swipe-hint');
-
-// Initialize
-function init() {
-    // Set initial active page
-    updateActivePage(1);
-    
-    // Add event listeners
-    addNavigationListeners();
-    addTouchListeners();
-    addKeyboardListeners();
-    addClickListeners();
-    
-    // Hide swipe hint after first interaction
-    setTimeout(() => {
-        swipeHint.classList.add('hidden');
-    }, 5000);
-}
-
-// Update active page
-function updateActivePage(pageNumber, direction = 'forward') {
-    if (isTransitioning || pageNumber === currentPage) return;
-    if (pageNumber < 1 || pageNumber > totalPages) return;
-    
-    isTransitioning = true;
-    
-    const oldPage = document.querySelector(`#page-${currentPage}`);
-    const newPage = document.querySelector(`#page-${pageNumber}`);
-    
-    // Remove all transition classes
-    pages.forEach(page => {
-        page.classList.remove('sliding-out-left', 'sliding-out-right', 'sliding-in-left', 'sliding-in-right', 'active');
-    });
-    
-    // Apply appropriate transition classes
-    if (direction === 'forward') {
-        oldPage.classList.add('sliding-out-left');
-        newPage.classList.add('sliding-in-right', 'active');
-    } else {
-        oldPage.classList.add('sliding-out-right');
-        newPage.classList.add('sliding-in-left', 'active');
+// Page Navigation System
+class PageNavigator {
+    constructor() {
+        this.currentPage = 1;
+        this.totalPages = 3;
+        this.pages = document.querySelectorAll('.page');
+        this.dots = document.querySelectorAll('.dot');
+        this.textLinks = document.querySelectorAll('.text-link');
+        this.navButtons = document.querySelectorAll('.nav-btn');
+        
+        this.init();
     }
     
-    // Update current page
-    currentPage = pageNumber;
+    init() {
+        // Set up text link navigation
+        this.textLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const gotoPage = parseInt(link.getAttribute('data-goto'));
+                if (gotoPage) {
+                    this.goToPage(gotoPage);
+                }
+            });
+        });
+        
+        // Set up dot navigation
+        this.dots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                const page = parseInt(dot.getAttribute('data-page'));
+                this.goToPage(page);
+            });
+        });
+        
+        // Set up arrow navigation
+        this.navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const direction = btn.getAttribute('data-nav');
+                if (direction === 'next') {
+                    this.nextPage();
+                } else if (direction === 'prev') {
+                    this.prevPage();
+                }
+            });
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') {
+                this.nextPage();
+            } else if (e.key === 'ArrowLeft') {
+                this.prevPage();
+            } else if (e.key >= '1' && e.key <= '3') {
+                this.goToPage(parseInt(e.key));
+            }
+        });
+        
+        // Touch/Swipe navigation for mobile
+        this.setupSwipeNavigation();
+        
+        // Initialize first page
+        this.updatePage();
+    }
     
-    // Update nav buttons
-    updateNavButtons();
+    goToPage(pageNumber) {
+        if (pageNumber >= 1 && pageNumber <= this.totalPages) {
+            this.currentPage = pageNumber;
+            this.updatePage();
+        }
+    }
     
-    // Update URL hash without scrolling
-    history.replaceState(null, null, `#page-${currentPage}`);
-    
-    // Reset transition flag
-    setTimeout(() => {
-        isTransitioning = false;
-    }, 600);
-    
-    // Hide swipe hint on first interaction
-    swipeHint.classList.add('hidden');
-}
-
-// Update navigation buttons
-function updateNavButtons() {
-    navBtns.forEach(btn => {
-        const btnPage = parseInt(btn.dataset.page);
-        if (btnPage === currentPage) {
-            btn.classList.add('active');
+    nextPage() {
+        if (this.currentPage < this.totalPages) {
+            this.currentPage++;
         } else {
-            btn.classList.remove('active');
+            this.currentPage = 1; // Loop back to first page
         }
-    });
-}
-
-// Navigate to next page
-function nextPage() {
-    if (currentPage < totalPages) {
-        updateActivePage(currentPage + 1, 'forward');
+        this.updatePage();
     }
-}
-
-// Navigate to previous page
-function prevPage() {
-    if (currentPage > 1) {
-        updateActivePage(currentPage - 1, 'backward');
+    
+    prevPage() {
+        if (this.currentPage > 1) {
+            this.currentPage--;
+        } else {
+            this.currentPage = this.totalPages; // Loop to last page
+        }
+        this.updatePage();
     }
-}
-
-// Navigation button listeners
-function addNavigationListeners() {
-    navBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const targetPage = parseInt(btn.dataset.page);
-            const direction = targetPage > currentPage ? 'forward' : 'backward';
-            updateActivePage(targetPage, direction);
+    
+    updatePage() {
+        // Update page visibility
+        this.pages.forEach((page, index) => {
+            if (index + 1 === this.currentPage) {
+                page.classList.add('active');
+            } else {
+                page.classList.remove('active');
+            }
         });
-    });
-}
-
-// Touch/swipe listeners
-function addTouchListeners() {
-    const container = document.querySelector('.page-container');
+        
+        // Update dot indicators
+        this.dots.forEach((dot, index) => {
+            if (index + 1 === this.currentPage) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+        
+        // Add animation class for smooth transitions
+        this.pages[this.currentPage - 1].style.animation = 'fadeIn 0.5s ease';
+    }
     
-    container.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-    }, { passive: true });
-    
-    container.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].screenX;
-        touchEndY = e.changedTouches[0].screenY;
-        handleSwipe();
-    }, { passive: true });
-    
-    // Mouse swipe for desktop
-    let mouseDown = false;
-    let mouseStartX = 0;
-    
-    container.addEventListener('mousedown', (e) => {
-        mouseDown = true;
-        mouseStartX = e.clientX;
-    });
-    
-    container.addEventListener('mouseup', (e) => {
-        if (mouseDown) {
-            const mouseEndX = e.clientX;
-            const deltaX = mouseEndX - mouseStartX;
+    setupSwipeNavigation() {
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        document.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            this.handleSwipe();
+        });
+        
+        this.handleSwipe = () => {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
             
-            if (Math.abs(deltaX) > 50) {
-                if (deltaX < 0) {
-                    nextPage();
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next page
+                    this.nextPage();
                 } else {
-                    prevPage();
+                    // Swipe right - previous page
+                    this.prevPage();
                 }
             }
-        }
-        mouseDown = false;
-    });
-    
-    container.addEventListener('mouseleave', () => {
-        mouseDown = false;
-    });
+        };
+    }
 }
 
-// Handle swipe gesture
-function handleSwipe() {
-    const deltaX = touchEndX - touchStartX;
-    const deltaY = touchEndY - touchStartY;
+// Enhanced text link interactions
+function enhanceTextLinks() {
+    const textLinks = document.querySelectorAll('.text-link');
     
-    // Check if horizontal swipe is dominant
-    if (Math.abs(deltaX) > Math.abs(deltaY)) {
-        const threshold = 50; // Minimum swipe distance
+    textLinks.forEach(link => {
+        // Add subtle hover effect
+        link.addEventListener('mouseenter', function() {
+            this.style.letterSpacing = '2px';
+        });
         
-        if (deltaX < -threshold) {
-            // Swipe left - go to next page
-            nextPage();
-        } else if (deltaX > threshold) {
-            // Swipe right - go to previous page
-            prevPage();
-        }
-    }
-}
-
-// Keyboard navigation
-function addKeyboardListeners() {
-    document.addEventListener('keydown', (e) => {
-        if (isTransitioning) return;
+        link.addEventListener('mouseleave', function() {
+            this.style.letterSpacing = '0';
+        });
         
-        switch(e.key) {
-            case 'ArrowRight':
-            case 'ArrowDown':
-            case ' ':
-            case 'PageDown':
-                e.preventDefault();
-                nextPage();
-                break;
-            case 'ArrowLeft':
-            case 'ArrowUp':
-            case 'PageUp':
-                e.preventDefault();
-                prevPage();
-                break;
-            case 'Home':
-                e.preventDefault();
-                updateActivePage(1, currentPage > 1 ? 'backward' : 'forward');
-                break;
-            case 'End':
-                e.preventDefault();
-                updateActivePage(totalPages, currentPage < totalPages ? 'forward' : 'backward');
-                break;
-            case '1':
-            case '2':
-            case '3':
-                const pageNum = parseInt(e.key);
-                if (pageNum >= 1 && pageNum <= totalPages) {
-                    const direction = pageNum > currentPage ? 'forward' : 'backward';
-                    updateActivePage(pageNum, direction);
-                }
-                break;
-        }
+        // Add click ripple effect
+        link.addEventListener('click', function(e) {
+            const ripple = document.createElement('div');
+            ripple.style.position = 'absolute';
+            ripple.style.width = '20px';
+            ripple.style.height = '20px';
+            ripple.style.borderRadius = '50%';
+            ripple.style.background = 'rgba(6, 4, 5, 0.3)';
+            ripple.style.left = e.offsetX + 'px';
+            ripple.style.top = e.offsetY + 'px';
+            ripple.style.pointerEvents = 'none';
+            ripple.style.animation = 'ripple 0.6s ease-out';
+            
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
     });
 }
 
-// Click listeners for text and images
-function addClickListeners() {
-    // Page 1 text - goes to page 2
-    const pg1Text = document.getElementById('pg1-text');
-    if (pg1Text) {
-        pg1Text.addEventListener('click', (e) => {
-            e.preventDefault();
-            updateActivePage(2, 'forward');
-        });
-    }
-    
-    // Page 2 text - goes to page 3
-    const pg2Link = document.querySelector('#page-2 .page-text-link');
-    if (pg2Link) {
-        pg2Link.addEventListener('click', (e) => {
-            e.preventDefault();
-            updateActivePage(3, 'forward');
-        });
-    }
-    
-    // Page 3 drawing - goes to page 1
-    const drawing = document.querySelector('.drawing1');
-    if (drawing) {
-        drawing.addEventListener('click', (e) => {
-            e.preventDefault();
-            updateActivePage(1, 'backward');
-        });
-    }
-}
-
-// Handle hash navigation on load
-function checkInitialHash() {
-    const hash = window.location.hash;
-    if (hash) {
-        const match = hash.match(/#page-(\d+)/);
-        if (match) {
-            const pageNum = parseInt(match[1]);
-            if (pageNum >= 1 && pageNum <= totalPages) {
-                updateActivePage(pageNum);
-            }
+// Add ripple animation
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes ripple {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(20);
+            opacity: 0;
         }
     }
-}
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+    }
+`;
+document.head.appendChild(style);
 
-// Handle browser back/forward
-window.addEventListener('popstate', () => {
-    checkInitialHash();
+// Initialize navigation when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    const navigator = new PageNavigator();
+    enhanceTextLinks();
+    
+    // Console info for developers
+    console.log('%c🎨 Orange Design - Interactive Prototype', 'font-size: 16px; font-weight: bold; color: #575039;');
+    console.log('%cNavigation:', 'font-weight: bold;');
+    console.log('• Click "text test" to navigate between pages');
+    console.log('• Use arrow keys (← →) or navigation buttons');
+    console.log('• Click dots to jump to specific pages');
+    console.log('• Swipe left/right on touch devices');
+    console.log('• Press 1, 2, or 3 to jump to pages');
 });
 
-// Preload images
+// Preload images for smooth transitions
 function preloadImages() {
     const images = [
-        'https://www.figma.com/api/mcp/asset/cf93fb74-8eee-48ff-a83c-39796a6b1171',
-        'https://www.figma.com/api/mcp/asset/8a66a288-a76b-4d51-8201-dbe2b25b7569',
-        'https://www.figma.com/api/mcp/asset/a32d3a33-a483-4d89-b1bf-a5d810ad6df0'
+        'https://www.figma.com/api/mcp/asset/8988c84e-bbb5-4a7a-9f40-f283603b9568',
+        'https://www.figma.com/api/mcp/asset/1199ae8f-f034-4853-ab77-9acf807513f4',
+        'https://www.figma.com/api/mcp/asset/625c7ca7-529e-40e1-83d7-3eca5989ce62'
     ];
     
     images.forEach(src => {
@@ -277,30 +231,4 @@ function preloadImages() {
     });
 }
 
-// Wheel navigation (optional)
-let wheelTimeout;
-document.addEventListener('wheel', (e) => {
-    if (isTransitioning) return;
-    
-    clearTimeout(wheelTimeout);
-    wheelTimeout = setTimeout(() => {
-        if (Math.abs(e.deltaY) > 30) {
-            if (e.deltaY > 0) {
-                nextPage();
-            } else {
-                prevPage();
-            }
-        }
-    }, 50);
-}, { passive: true });
-
-// Start the application
-document.addEventListener('DOMContentLoaded', () => {
-    preloadImages();
-    checkInitialHash();
-    init();
-});
-
-// Export functions for debugging (optional)
-window.navigateTo = updateActivePage;
-window.getCurrentPage = () => currentPage;
+preloadImages();
