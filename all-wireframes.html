@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orange - All Wireframes</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        .nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+
+        .nav button {
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav button:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        .nav button.active {
+            background: #060405;
+        }
+
+        .wireframe {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wireframe.active {
+            display: block;
+        }
+    </style>
+    <link rel="stylesheet" href="wireframe-styles.css">
+</head>
+<body>
+    <div class="nav">
+        <button onclick="showWireframe(1)" class="active" id="btn1">Wireframe 1</button>
+        <button onclick="showWireframe(2)" id="btn2">Wireframe 2</button>
+        <button onclick="showWireframe(3)" id="btn3">Wireframe 3</button>
+    </div>
+
+    <!-- Wireframe 1 -->
+    <div class="wireframe active" id="wireframe1">
+        <div class="image-container-1">
+            <img src="https://www.figma.com/api/mcp/asset/9a1c98a0-2fd7-4c6b-b109-a55158136389" 
+                 alt="House Fly" 
+                 class="background-image">
+        </div>
+        <div class="title-text">text test</div>
+    </div>
+
+    <!-- Wireframe 2 -->
+    <div class="wireframe" id="wireframe2">
+        <div class="wireframe-2-bg">
+            <div class="title-text-2">text test</div>
+        </div>
+    </div>
+
+    <!-- Wireframe 3 -->
+    <div class="wireframe" id="wireframe3">
+        <div class="image-container-3">
+            <img src="https://www.figma.com/api/mcp/asset/708118cd-569d-4d79-8451-12cf418abdb3" 
+                 alt="House Fly Small" 
+                 class="small-image">
+        </div>
+        <div class="title-text-3">text test</div>
+        <div class="vector-container">
+            <img src="https://www.figma.com/api/mcp/asset/c799bc2c-166c-445b-b8f0-d6c3d7346204" 
+                 alt="Vector" 
+                 class="vector-image">
+        </div>
+    </div>
+
+    <script>
+        function showWireframe(num) {
+            // Hide all wireframes
+            document.querySelectorAll('.wireframe').forEach(w => w.classList.remove('active'));
+            document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+            
+            // Show selected wireframe
+            document.getElementById('wireframe' + num).classList.add('active');
+            document.getElementById('btn' + num).classList.add('active');
+        }
+    </script>
+</body>
+</html>

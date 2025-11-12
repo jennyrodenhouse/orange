@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe 2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jacquard+12&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .wireframe {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: #575039;
+        }
+
+        .title-text {
+            position: absolute;
+            left: 419px;
+            top: 412px;
+            font-family: 'Jacquard 12', sans-serif;
+            font-size: 200px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: normal;
+            color: #060405;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 1600px) {
+            .title-text {
+                font-size: 12vw;
+                left: 5%;
+                top: 40%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .title-text {
+                font-size: 18vw;
+                left: 5%;
+                top: 35%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wireframe">
+        <div class="title-text">text test</div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+/* Wireframe 1 Styles */
+#wireframe1 {
+    background-color: white;
+}
+
+.image-container-1 {
+    position: absolute;
+    width: 1820px;
+    height: 1024px;
+    left: -134px;
+    top: 0;
+}
+
+.background-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 50%;
+    pointer-events: none;
+}
+
+.title-text {
+    position: absolute;
+    left: 419px;
+    top: 412px;
+    font-family: 'Jacquard 12', sans-serif;
+    font-size: 200px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #060405;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+/* Wireframe 2 Styles */
+#wireframe2 {
+    background-color: #575039;
+}
+
+.wireframe-2-bg {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.title-text-2 {
+    position: absolute;
+    left: 419px;
+    top: 412px;
+    font-family: 'Jacquard 12', sans-serif;
+    font-size: 200px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #060405;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+/* Wireframe 3 Styles */
+#wireframe3 {
+    background-color: white;
+}
+
+.image-container-3 {
+    position: absolute;
+    left: 769px;
+    top: 665px;
+    width: 502px;
+    height: 283px;
+}
+
+.small-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 50%;
+    pointer-events: none;
+}
+
+.title-text-3 {
+    position: absolute;
+    left: 419px;
+    top: 412px;
+    font-family: 'Jacquard 12', sans-serif;
+    font-size: 200px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    color: #060405;
+}
+
+.vector-container {
+    position: absolute;
+    left: 102.43px;
+    top: 77px;
+    width: 432.371px;
+    height: 233.984px;
+    cursor: pointer;
+}
+
+.vector-image {
+    display: block;
+    max-width: none;
+    width: 100%;
+    height: 100%;
+}
+
+/* Responsive Styles */
+@media (max-width: 1600px) {
+    .image-container-1 {
+        width: 100%;
+        height: auto;
+        left: 0;
+    }
+    
+    .title-text,
+    .title-text-2,
+    .title-text-3 {
+        font-size: 12vw;
+        left: 5%;
+        top: 40%;
+    }
+
+    .image-container-3 {
+        left: 50%;
+        top: 60%;
+        width: 30vw;
+        height: auto;
+    }
+
+    .vector-container {
+        left: 5%;
+        top: 5%;
+        width: 25vw;
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .title-text,
+    .title-text-2,
+    .title-text-3 {
+        font-size: 18vw;
+        left: 5%;
+        top: 35%;
+    }
+
+    .image-container-3 {
+        left: 25%;
+        top: 65%;
+        width: 50vw;
+    }
+
+    .vector-container {
+        left: 5%;
+        top: 8%;
+        width: 40vw;
+    }
+}
